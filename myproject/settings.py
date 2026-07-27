@@ -123,3 +123,8 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'auth_user.CustomUser'
+
+AUTHENTICATION_BACKENDS = [
+    'auth_user.backends.registration_backend.RegistrationNumberBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
