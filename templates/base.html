@@ -23,9 +23,10 @@
         <div class="page-wrapper">
             {% block content %}
             {% endblock %}
+            {% include 'includes/footer.html' %}
         </div>
     </div>
-    {% include 'includes/footer.html' %}
+    
     <script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'assets/js/popper.min.js' %}"></script>
     <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
