@@ -2,6 +2,9 @@
 
 A Django-based SMS project.
 
+## Author
+Md Rakib Hasan
+
 ## Setup
 
 **Step 1:** Create a virtual environment
