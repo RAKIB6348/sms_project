@@ -1,0 +1,13 @@
+# MyProject
+
+A Django-based SMS project.
+
+## Setup
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
