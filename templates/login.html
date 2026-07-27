@@ -13,6 +13,20 @@
     <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        .floating-label { position: relative; }
+        .floating-label label {
+            position: absolute; top: 50%; left: 0.75rem;
+            transform: translateY(-50%); transition: 0.2s ease all;
+            color: #aaa; pointer-events: none; font-size: 0.9rem;
+            background: #fff; padding: 0 4px;
+        }
+        .floating-label .form-control:focus ~ label,
+        .floating-label .form-control:not(:placeholder-shown) ~ label {
+            top: 0; transform: translateY(-50%) scale(0.85);
+            color: #667b9e;
+        }
+    </style>
 </head>
 
 <body>
@@ -32,11 +46,13 @@
                             {% endif %}
                             <form method="post">
                                 {% csrf_token %}
-                                <div class="form-group">
-                                    <input class="form-control" type="text" name="registration_no" placeholder="Registration Number" required>
+                                <div class="form-group floating-label">
+                                    <input class="form-control" type="text" name="registration_no" placeholder="User ID" required>
+                                    <label>User ID</label>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group floating-label">
                                     <input class="form-control" type="password" name="password" placeholder="Password" required>
+                                    <label>Password</label>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-primary btn-block" type="submit">Login</button>
@@ -44,17 +60,6 @@
                             </form>
                             <div class="text-center forgotpass"><a href="forgot-password.html">Forgot Password?</a>
                             </div>
-                            <div class="login-or">
-                                <span class="or-line"></span>
-                                <span class="span-or">or</span>
-                            </div>
-                            <div class="social-login">
-                                <span>Login with</span>
-                                <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a><a href="#"
-                                    class="google"><i class="fab fa-google"></i></a>
-                            </div>
-                            <div class="text-center dont-have">Don’t have an account? <a
-                                    href="register.html">Register</a></div>
                         </div>
                     </div>
                 </div>
