@@ -1,6 +1,13 @@
 # MyProject
 
-A Django-based SMS project.
+A Django-based School Management System (SMS) project.
+
+## Features
+- Static files (CSS, JS, images) configuration
+- Media files (user uploads) configuration
+- Template system with base layout
+- Header, sidebar, and footer includes
+- Login page
 
 ## Author
 Md Rakib Hasan
