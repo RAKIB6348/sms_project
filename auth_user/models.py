@@ -25,7 +25,8 @@ class CustomUser(AbstractUser):
         type_code = self.TYPE_CODE_MAP.get(self.user_type, '00')
         with transaction.atomic():
             last_reg = CustomUser.objects.filter(
-                registration_no__startswith=year
+                user_type=self.user_type,
+                registration_no__startswith=year,
             ).select_for_update().aggregate(Max('registration_no'))
             last_no = last_reg['registration_no__max']
             if last_no:
