@@ -18,4 +18,4 @@ class Section(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.school_class.name} - {self.name}"
+        return f"{self.name}"
