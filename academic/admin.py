@@ -17,3 +17,10 @@ class SectionAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_at', 'updated_at')
     search_fields = ('name',)
     ordering = ('name',)
+    
+
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'created_at', 'updated_at')
+    search_fields = ('name', 'code')
+    ordering = ('name',)
