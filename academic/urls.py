@@ -3,8 +3,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Subject URLs
     path('subjects/', views.subject_list, name='subject_list'),
     path('subjects/add/', views.subject_add, name='subject_add'),
     path('subjects/edit/<int:pk>/', views.subject_edit, name='subject_edit'),
     path('subjects/delete/<int:pk>/', views.subject_delete, name='subject_delete'),
+
+    # Section URLs
+    path('sections/', views.section_list, name='section_list'),
+    path('sections/add/', views.section_add, name='section_add'),
+    path('sections/edit/<int:pk>/', views.section_edit, name='section_edit'),
+    path('sections/delete/<int:pk>/', views.section_delete, name='section_delete'),
 ]
