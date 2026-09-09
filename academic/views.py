@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import redirect, render
 
-from .models import Section, Subject
+from .models import AcademicYear, Section, Subject
 
 
 def subject_list(request):
@@ -104,3 +104,48 @@ def section_delete(request, pk):
     section.delete()
     messages.success(request, 'Section deleted successfully.')
     return redirect('section_list')
+
+
+# Academic Year Views
+def academic_year_list(request):
+    academic_years = AcademicYear.objects.all()
+    search_query = request.GET.get('q', '')
+
+    if search_query:
+        academic_years = academic_years.filter(year__icontains=search_query)
+
+    context = {
+        'academic_years': academic_years,
+        'search_query': search_query,
+    }
+    return render(request, 'academic/academic_year/academic_year_list.html', context)
+
+
+def academic_year_add(request):
+    if request.method == 'POST':
+        year = request.POST.get('year')
+        is_active = request.POST.get('is_active') == 'on'
+        AcademicYear.objects.create(year=year, is_active=is_active)
+        messages.success(request, 'Academic year added successfully.')
+        return redirect('academic_year_list')
+
+    return render(request, 'academic/academic_year/add_academic_year.html')
+
+
+def academic_year_edit(request, pk):
+    academic_year = AcademicYear.objects.get(pk=pk)
+    if request.method == 'POST':
+        academic_year.year = request.POST.get('year')
+        academic_year.is_active = request.POST.get('is_active') == 'on'
+        academic_year.save()
+        messages.success(request, 'Academic year updated successfully.')
+        return redirect('academic_year_list')
+
+    return render(request, 'academic/academic_year/edit_academic_year.html', {'academic_year': academic_year})
+
+
+def academic_year_delete(request, pk):
+    academic_year = AcademicYear.objects.get(pk=pk)
+    academic_year.delete()
+    messages.success(request, 'Academic year deleted successfully.')
+    return redirect('academic_year_list')

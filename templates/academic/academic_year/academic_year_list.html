@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content container-fluid">
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h3 class="page-title">Academic Year List</h3>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'academic_year_list' %}">Academic Year</a></li>
+          <li class="breadcrumb-item active">Academic Year List</li>
+        </ul>
+      </div>
+      <div class="col-auto text-right float-right">
+        <a href="{% url 'academic_year_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Academic Year</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <form method="get" action="{% url 'academic_year_list' %}">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="q" placeholder="Search by year..." value="{{ search_query|default:'' }}">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Search</button>
+                      {% if search_query %}
+                      <a href="{% url 'academic_year_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i> Clear</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 text-right">
+              <span class="badge badge-primary">{{ academic_years|length }} academic year{{ academic_years|length|pluralize }}</span>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover table-center mb-0">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Status</th>
+                  <th>Created At</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for academic_year in academic_years %}
+                <tr>
+                  <td>{{ academic_year.year }}</td>
+                  <td>
+                    {% if academic_year.is_active %}
+                    <span class="badge badge-success">Active</span>
+                    {% else %}
+                    <span class="badge badge-secondary">Inactive</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ academic_year.created_at|date:"d M Y" }}</td>
+                  <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-primary edit-btn" data-id="{{ academic_year.pk }}" data-year="{{ academic_year.year }}" data-active="{{ academic_year.is_active|yesno:'true,false' }}"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-sm btn-danger delete-btn" data-url="{% url 'academic_year_delete' academic_year.pk %}" data-name="{{ academic_year.year }}"><i class="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No academic years found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Academic Year Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Academic Year</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" id="editAcademicYearForm">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Year</label>
+            <input type="text" class="form-control" name="year" id="editYear" required>
+          </div>
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="editIsActive" name="is_active">
+              <label class="custom-control-label" for="editIsActive">Active</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete "<span id="yearName"></span>"?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Edit Modal
+  var editBtns = document.querySelectorAll('.edit-btn');
+  var editModal = document.getElementById('editModal');
+  var editYear = document.getElementById('editYear');
+  var editIsActive = document.getElementById('editIsActive');
+  var editAcademicYearForm = document.getElementById('editAcademicYearForm');
+
+  editBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id = this.getAttribute('data-id');
+      var year = this.getAttribute('data-year');
+      var isActive = this.getAttribute('data-active') === 'true';
+      editYear.value = year;
+      editIsActive.checked = isActive;
+      editAcademicYearForm.action = '/academic/academic-years/edit/' + id + '/';
+      $('#editModal').modal('show');
+    });
+  });
+
+  // Delete Modal
+  var deleteBtns = document.querySelectorAll('.delete-btn');
+  var deleteModal = document.getElementById('deleteModal');
+  var yearNameSpan = document.getElementById('yearName');
+  var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+  deleteBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var url = this.getAttribute('data-url');
+      var name = this.getAttribute('data-name');
+      yearNameSpan.textContent = name;
+      confirmDeleteBtn.setAttribute('href', url);
+      $('#deleteModal').modal('show');
+    });
+  });
+});
+</script>
+{% endblock %}

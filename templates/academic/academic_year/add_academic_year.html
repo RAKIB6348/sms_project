@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content container-fluid">
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h3 class="page-title">Add Academic Year</h3>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'academic_year_list' %}">Academic Year</a></li>
+          <li class="breadcrumb-item active">Add Academic Year</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <h5 class="form-title"><span>Academic Year Information</span></h5>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label>Year</label>
+                  <input type="text" class="form-control" name="year" value="{{ form_data.year|default:'' }}" required>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox mt-4">
+                    <input type="checkbox" class="custom-control-input" id="isActive" name="is_active">
+                    <label class="custom-control-label" for="isActive">Active</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
