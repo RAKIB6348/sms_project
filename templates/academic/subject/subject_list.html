@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content container-fluid">
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h3 class="page-title">Subject List</h3>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">Subject</a></li>
+          <li class="breadcrumb-item active">Subject List</li>
+        </ul>
+      </div>
+      <div class="col-auto text-right float-right">
+        <a href="{% url 'subject_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Subject</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover table-center mb-0">
+              <thead>
+                <tr>
+                  <th>Subject Code</th>
+                  <th>Subject Name</th>
+                  <th>Created At</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for subject in subjects %}
+                <tr>
+                  <td>{{ subject.code }}</td>
+                  <td>{{ subject.name }}</td>
+                  <td>{{ subject.created_at|date:"d M Y" }}</td>
+                  <td class="text-right">
+                    <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+                    <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No subjects found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
