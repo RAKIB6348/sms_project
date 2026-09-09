@@ -24,3 +24,29 @@ def subject_add(request):
         return redirect('subject_list')
 
     return render(request, 'academic/subject/add-subject.html')
+
+
+def subject_edit(request, pk):
+    subject = Subject.objects.get(pk=pk)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        code = request.POST.get('code')
+
+        if Subject.objects.filter(code=code).exclude(pk=pk).exists():
+            messages.error(request, 'Subject code already exists.')
+            return render(request, 'academic/subject/edit-subject.html', {'subject': subject, 'form_data': {'name': name, 'code': code}})
+
+        subject.name = name
+        subject.code = code
+        subject.save()
+        messages.success(request, 'Subject updated successfully.')
+        return redirect('subject_list')
+
+    return render(request, 'academic/subject/edit-subject.html', {'subject': subject})
+
+
+def subject_delete(request, pk):
+    subject = Subject.objects.get(pk=pk)
+    subject.delete()
+    messages.success(request, 'Subject deleted successfully.')
+    return redirect('subject_list')
