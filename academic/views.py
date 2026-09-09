@@ -69,9 +69,7 @@ def section_list(request):
     search_query = request.GET.get('q', '')
 
     if search_query:
-        sections = sections.filter(
-            Q(name__icontains=search_query) | Q(code__icontains=search_query)
-        )
+        sections = sections.filter(name__icontains=search_query)
 
     context = {
         'sections': sections,
@@ -83,13 +81,7 @@ def section_list(request):
 def section_add(request):
     if request.method == 'POST':
         name = request.POST.get('name')
-        code = request.POST.get('code')
-
-        if Section.objects.filter(code=code).exists():
-            messages.error(request, 'Section code already exists.')
-            return render(request, 'academic/section/add-section.html', {'form_data': {'name': name, 'code': code}})
-
-        Section.objects.create(name=name, code=code)
+        Section.objects.create(name=name)
         messages.success(request, 'Section added successfully.')
         return redirect('section_list')
 
@@ -99,15 +91,7 @@ def section_add(request):
 def section_edit(request, pk):
     section = Section.objects.get(pk=pk)
     if request.method == 'POST':
-        name = request.POST.get('name')
-        code = request.POST.get('code')
-
-        if Section.objects.filter(code=code).exclude(pk=pk).exists():
-            messages.error(request, 'Section code already exists.')
-            return render(request, 'academic/section/edit-section.html', {'section': section, 'form_data': {'name': name, 'code': code}})
-
-        section.name = name
-        section.code = code
+        section.name = request.POST.get('name')
         section.save()
         messages.success(request, 'Section updated successfully.')
         return redirect('section_list')
