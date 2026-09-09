@@ -21,6 +21,27 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                <form method="get" action="{% url 'subject_list' %}">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="q" placeholder="Search by name or code..." value="{{ search_query|default:'' }}">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Search</button>
+                      {% if search_query %}
+                      <a href="{% url 'subject_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i> Clear</a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 text-right">
+              <span class="badge badge-primary">{{ subjects|length }} subject{{ subjects|length|pluralize }}</span>
+            </div>
+          </div>
+
           <div class="table-responsive">
             <table class="table table-hover table-center mb-0">
               <thead>

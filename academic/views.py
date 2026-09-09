@@ -1,13 +1,24 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import redirect, render
 
 from .models import Subject
 
 
-# TODO: Create subject list template and implement full list view
 def subject_list(request):
     subjects = Subject.objects.all()
-    return render(request, 'academic/subject/subject_list.html', {'subjects': subjects})
+    search_query = request.GET.get('q', '')
+
+    if search_query:
+        subjects = subjects.filter(
+            Q(name__icontains=search_query) | Q(code__icontains=search_query)
+        )
+
+    context = {
+        'subjects': subjects,
+        'search_query': search_query,
+    }
+    return render(request, 'academic/subject/subject_list.html', context)
 
 
 def subject_add(request):
